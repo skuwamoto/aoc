@@ -1,0 +1,64 @@
+Part A
+--
+
+x + y + t(vx)
+
+(x, y) = (px + t*vx, py + t*vy)
+
+y = py + t * vy
+x = px + t * vx
+
+t * vx = (x - px)
+t = (x - px) / vx
+
+y = py1 + (x-px1) * vy1 / vx1
+
+y = py2 + (x-px2) * vy2 / vx2
+
+(x-px1) * vy1 / vx1 - [ (x-px2) * vy2 / vx2 ] = py2 - py1
+
+
+x * (vy1 /vx1 - vy2 / vx2) = py2 - py1 + px1 * vy1/vx1 - px2 * vy2 / vx2
+
+x = (py2 - py1) + (px1 * vy1 / vx1) - (px2 * vy2 / vx2) 
+    ---------------------------------------------------
+               (vy1 / vx1 - vy2 / vx2)
+
+
+y = py1 + (x-px1) * vy1 / vx1
+
+
+Part B
+--
+
+(x, y, z, t) = (px + t * vx, py + t * vy, pz + t * vz, t)
+
+
+(x, y, z) = (px0 + t1 * vx0, py0 + t1 * vy0, pz0 + t1 * vz0)
+(x, y, z) = (px1 + t1 * vx1, py1 + t1 * vy1, pz1 + t1 * vz1)
+
+(x, y, z) = (px0 + t2 * vx0, py0 + t2 * vy0, pz0 + t2 * vz0)
+(x, y, z) = (px2 + t2 * vx2, py2 + t2 * vy2, pz2 + t2 * vz2)
+
+(x, y, z) = (px0 + t3 * vx0, py0 + t3 * vy0, pz0 + t3 * vz0)
+(x, y, z) = (px3 + t3 * vx3, py3 + t3 * vy3, pz3 + t3 * vz3)
+
+=> px0 + t1 * vx0 = px1 + t1 * vx1
+   py0 + t1 * vy0 = py1 + t1 * vy1
+   pz0 + t1 * vz0 = pz1 + t1 * vz1
+
+   px0 + t1 * vx0 = px2 + t2 * vx2
+   py0 + t1 * vy0 = py2 + t2 * vy2
+   pz0 + t1 * vz0 = pz2 + t2 * vz2
+
+   etc.
+
+=> px0 - px1 = t1 * (vx1 - vx0)
+   py0 - py1 = t1 * (vy1 - vy0)
+   pz0 - pz1 = t1 * (vz1 - vz0)
+
+=> t1 = (px0 - px1) / (vx1 - vx0) = (py0 - py1) / (vy1 - vy0) = (pz0 - pz1) / (vz1 - vz0)
+   t2 = (px0 - px2) / (vx2 - vx0) = (py0 - py2) / (vy2 - vy0) = (pz0 - pz2) / (vz2 - vz0)
+   t3 = (px0 - px2) / (vx3 - vx0) = (py0 - py3) / (vy3 - vy0) = (pz0 - pz3) / (vz3 - vz0)
+
+=> px0 = 

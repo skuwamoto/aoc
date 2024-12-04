@@ -1,0 +1,271 @@
+//D1 Takes a digit, sets x to 1 y to digit + 8, z to digit + 8.
+inp w		{w: d0, x: 0, y: 0, z: 0} 
+mul x 0 	{w: d0, x: 0, y: 0, z: 0} 
+add x z 	{w: d0, x: 0, y: 0, z: 0} 
+mod x 26	{w: d0, x: 0, y: 0, z: 0} 
+div z 1 	{w: d0, x: 0, y: 0, z: 0} 
+add x 13		//
+eql x w 		// This section always converts x to 1.
+eql x 0     	//
+mul y 0 	// 
+add y 25	// This section always sets y to 26
+mul y x 	//
+add y 1 	//
+mul z y 	{w: d0, x: 1, y: 26, z: 0} 
+mul y 0 	{w: d0, x: 1, y: 0, z: 0} 
+add y w		{w: d0, x: 1, y: d0 , z: 0} 
+add y 8 	{w: d0, x: 1, y: d0 + 8, z: 0} 
+mul y x 	{w: d0, x: 1, y: d0 + 8, z: 0} 
+add z y		{w: d0, x: 1, y: d0 + 8, z: d0 + 8} 
+
+func 2ndInput(w, x, y, z) {
+	
+}
+// D2 Takes a digit, sets x to 1, sets y to digit + 13, sets z to prev z times 26 plus y (digit + 13)
+inp w		{w: d1, x: 1, y: d0 + 8, z: d0 + 8} 
+mul x 0 	{w: d1, x: 0, y: d0 + 8, z: d0 + 8} 
+add x z 	{w: d1, x: d0 + 8, y: d0 + 8, z: d0 + 8} 
+mod x 26	{w: d1, x: d0 + 8, y: d0 + 8, z: d0 + 8} // Note: x could be at most 17, so mod will never have any effect.
+div z 1 	{w: d1, x: d0 + 8, y: d0 + 8, z: d0 + 8} 
+add x 12 	//
+eql x w 	// This section always converts x to 1.
+eql x 0 	//
+mul y 0 		//
+add y 25 		// This section always sets y to 26
+mul y x 		//
+add y 1 		//
+mul z y 	{w: d1, x: 1, y: 26, z: 26(d0) + 26(8)}
+mul y 0 	{w: d1, x: 1, y: 0, z: 26(d0) + 26(8)}
+add y w 	{w: d1, x: 1, y: d1, z: 26(d0) + 26(8)}
+add y 13 	{w: d1, x: 1, y: d1 + 13, z: 26(d0) + 26(8)}
+mul y x 	{w: d1, x: 1, y: d1 + 13, z: 26(d0) + 26(8)}
+add z y 	{w: d1, x: 1, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+
+// D3
+inp w 		{w: d2, x: 1, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+mul x 0 	{w: d2, x: 0, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+add x z 	{w: d2, x: 26(d0) + 26(8) + d1 + 13, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+mod x 26 	{w: d2, x: d1 + 13, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13} // removes the multiples of 26, getting the previous digit + 13.
+div z 1 	{w: d2, x: d1 + 13, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+add x 12 	// 
+eql x w 	// This section always sets x to 1.
+eql x 0     //
+mul y 0  		//
+add y 25 		// This section always sets y to 26
+mul y x 		//
+add y 1 		//
+mul z y 	{w: d2, x: d1 + 13, y: d1 + 13, z: 26(d0) + 26(8) + d1 + 13}
+mul y 0
+add y w
+add y 8
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 10
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 12
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -13
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 15
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 13
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -2
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 10
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -6
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 14
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 2
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x 0
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 2
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -15
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 12
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -4
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y

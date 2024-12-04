@@ -1,0 +1,69 @@
+broadcaster -> [ 'fr', 'jf', 'mf', 'bv' ]
+
+% fr -> [ 'ms', 'zm' ] X
+% zm -> [ 'ms', 'vr' ] X
+% vr -> [ 'br' ]       
+% br -> [ 'px' ]       
+% px -> [ 'nl' ]       
+% nl -> [ 'hz' ]       
+% hz -> [ 'ms', 'vg' ] X
+% vg -> [ 'bs' ]       
+% bs -> [ 'xj', 'ms' ] X
+% xj -> [ 'ms', 'vt' ] X
+% vt -> [ 'ms', 'ts' ] X
+% ts -> [ 'ms' ]       X
+
+& ms -> [ 'br', 'nl', 'px', 'vg', 'vr', 'ks', 'fr' ] -> 3907
+
+% jf -> [ 'zt', 'pd' ] X
+% pd -> [ 'hr', 'zt' ] X
+% hr -> [ 'hg', 'zt' ] X
+% hg -> [ 'fh', 'zt' ] X
+% fh -> [ 'xp' ]       
+% xp -> [ 'vl', 'zt' ] X
+% vl -> [ 'zt', 'tz' ] X
+% tz -> [ 'jl', 'zt' ] X
+% jl -> [ 'cb' ]       
+% cb -> [ 'sj', 'zt' ] X
+% sj -> [ 'mq', 'zt' ] X
+% mq -> [ 'zt' ]       X
+
+& zt -> [ 'jl', 'xc', 'jf', 'fh' ] -> 3823
+
+% mf -> [ 'xd', 'qb' ] X
+% qb -> [ 'zq' ]
+% zq -> [ 'xd', 'fx' ] X
+% fx -> [ 'mv' ]
+% mv -> [ 'xd', 'ss' ] X
+% ss -> [ 'bg' ]
+% bg -> [ 'xl' ]
+% xl -> [ 'xd', 'sn' ] X
+% sn -> [ 'kx' ]
+% kx -> [ 'dp', 'xd' ] X
+% dp -> [ 'bj', 'xd' ] X
+% bj -> [ 'xd' ]       X
+
+& xd -> [ 'kp', 'bg', 'ss', 'sn', 'mf', 'qb', 'fx' ] -> 3733
+
+% bv -> [ 'gt', 'nn' ] X
+% nn -> [ 'nz' ]
+% nz -> [ 'pm', 'gt' ] X
+% pm -> [ 'lt' ]
+% lt -> [ 'gt', 'xh' ] X
+% xh -> [ 'qh' ]
+% qh -> [ 'gt', 'kt' ] X
+% kt -> [ 'gp', 'gt' ] X
+% gp -> [ 'bx' ]
+% bx -> [ 'jr', 'gt' ] X
+% jr -> [ 'gt', 'hv' ] X
+% hv -> [ 'gt' ]       X
+
+& gt -> [ 'pm', 'xh', 'gp', 'nn', 'bv', 'ct' ] -> 3797
+
+& kp -> [ 'bb' ]
+& ct -> [ 'bb' ]
+& ks -> [ 'bb' ]
+& xc -> [ 'bb' ]
+
+& bb -> [ 'rx' ]
+

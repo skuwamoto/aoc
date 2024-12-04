@@ -1,0 +1,15 @@
+0000000
+0123450
+0000000
+
+down
+right
+right
+right
+bark
+bark
+bark
+up
+left
+bark
+left
