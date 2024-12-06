@@ -26,7 +26,7 @@ let dirs = [
     [1,1]
 ]
 
-let word = ['X','M','A','S']
+let word = 'XMAS'
 
 function partA(info) {
     let sum = 0
