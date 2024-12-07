@@ -11,7 +11,7 @@ function parse(lines) {
 test = parse(test)
 input = parse(input)
 
-test.print()
+// test.print()
 console.log()
 
 function partA(info) {

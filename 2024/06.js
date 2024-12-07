@@ -14,24 +14,9 @@ input = parse(input)
 // test.print()
 console.log()
 
-function find(grid, c) {
-    for (let [i, j] of grid.indexes()) {
-        if (grid.getAt(i, j) == c) return [i, j]
-    }
-    return null
-}
-
-function count(grid, c) {
-    let sum = 0
-    for (let [i, j] of grid.indexes()) {
-        if (grid.getAt(i, j) == c) sum++
-    }
-    return sum
-}
-
 function partA(info) {
     let c = '^'
-    let [i, j] = find(info, c)
+    let [i, j] = info.gridFind(c)
     while (i >= 0 && i < info.h() && j >= 0 && j <= info.w()) {
         switch (c) {
         case '^':
@@ -69,13 +54,13 @@ function partA(info) {
         }
     }
 
-    return count(info, 'X')
+    return info.gridFindAll('X').length
 }
 
 
 function isLoop(grid) {
     let c = '^'
-    let [i, j] = find(grid, c)
+    let [i, j] = grid.gridFind(c)
     grid[i][j] = '.'
 
     while (i >= 0 && i < grid.h() && j >= 0 && j <= grid.w()) {

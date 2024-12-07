@@ -204,16 +204,16 @@ Array.prototype.gridEquals = function (grid) {
 }
 
 Array.prototype.gridFind = function (c) {
-    for (let [i, j] of grid.indexes()) {
-        if (grid.getAt(i, j) == c) return [i, j]
+    for (let [i, j] of this.indexes()) {
+        if (this.getAt(i, j) == c) return [i, j]
     }
     return null
 }
 
 Array.prototype.gridFindAll = function (c) {
     let result = []
-    for (let [i, j] of grid.indexes()) {
-        if (grid.getAt(i, j) == c) result.push([i, j])
+    for (let [i, j] of this.indexes()) {
+        if (this.getAt(i, j) == c) result.push([i, j])
     }
     return result
 }
