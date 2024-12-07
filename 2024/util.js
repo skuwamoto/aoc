@@ -203,6 +203,22 @@ Array.prototype.gridEquals = function (grid) {
     return true
 }
 
+Array.prototype.gridFind = function (c) {
+    for (let [i, j] of grid.indexes()) {
+        if (grid.getAt(i, j) == c) return [i, j]
+    }
+    return null
+}
+
+Array.prototype.gridFindAll = function (c) {
+    let result = []
+    for (let [i, j] of grid.indexes()) {
+        if (grid.getAt(i, j) == c) result.push([i, j])
+    }
+    return result
+}
+
+
 
 // Print [['a','b','c'], ['d','e','f']] => "abc\ndef"
 // Any falsy values (except the number zero) will be turned into dots.
@@ -279,11 +295,9 @@ Array.prototype.neighborVals = function(i, j) {
 function sum(a) { return a.reduce((acc, item) => acc + item, 0) }
 Array.prototype.sum = function () { return sum(this) }
 
-//  sort([10,3,2]) => [10, 2, 3] (does not make a copy)
 // nsort([10,3,2]) => [2, 3, 10] (does not make a copy)
 // rsort([10,3,2]) => [10, 3, 2] (does not make a copy)
 
-function sort(a) { a.sort(); return a }
 function nsort(a) { a.sort((a,b) => a-b); return a }
 function rsort(a) { a.sort((a,b) => b-a); return a }
 

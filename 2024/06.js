@@ -2,36 +2,150 @@ const fs = require('fs');
 const u = require('./util')
 
 let test = fs.readFileSync('./test06.txt', {encoding:'utf8', flag:'r'});
-let input = fs.readFileSync('./input06.txt', {encoding:'utf8', flag:'r'});
+let input = fs.readFileSync('./sean06.txt', {encoding:'utf8', flag:'r'});
 
 function parse(lines) {
-    lines = lines.split('\n').map(x => x.split(''))
-    return lines
+    return lines.stringToGrid()
 }
 
 test = parse(test)
 input = parse(input)
 
-console.log(test)
+// test.print()
 console.log()
 
-// test = test.stringToGrid()
-// input = input.stringToGrid()
+function find(grid, c) {
+    for (let [i, j] of grid.indexes()) {
+        if (grid.getAt(i, j) == c) return [i, j]
+    }
+    return null
+}
 
-// test.print()
+function count(grid, c) {
+    let sum = 0
+    for (let [i, j] of grid.indexes()) {
+        if (grid.getAt(i, j) == c) sum++
+    }
+    return sum
+}
 
 function partA(info) {
-    let sum = 0
-    return sum
+    let c = '^'
+    let [i, j] = find(info, c)
+    while (i >= 0 && i < info.h() && j >= 0 && j <= info.w()) {
+        switch (c) {
+        case '^':
+            if (info.getAt(i-1, j) == '#') {
+                c = '>'
+            } else {
+                info.setAt(i, j, 'X')
+                i--
+            }
+            break;
+        case '>':
+            if (info.getAt(i, j+1) == '#') {
+                c = 'v'
+            } else {
+                info.setAt(i, j, 'X')
+                j++
+            }
+            break;
+        case 'v':
+            if (info.getAt(i+1, j) == '#') {
+                c = '<'
+            } else {
+                info.setAt(i, j, 'X')
+                i++
+            }
+            break;
+        case '<':
+            if (info.getAt(i, j-1) == '#') {
+                c = '^'
+            } else {
+                info.setAt(i, j, 'X')
+                j--
+            }
+            break;
+        }
+    }
+
+    return count(info, 'X')
+}
+
+
+function isLoop(grid) {
+    let c = '^'
+    let [i, j] = find(grid, c)
+    grid[i][j] = '.'
+
+    while (i >= 0 && i < grid.h() && j >= 0 && j <= grid.w()) {
+        switch (c) {
+        case '^':
+            if (grid.getAt(i-1, j) == '#') {
+                c = '>'
+            } else {
+                if (grid.getAt(i, j) == '^') return true
+                grid.setAt(i, j, '^')
+                i--
+            }
+            break;
+        case '>':
+            if (grid.getAt(i, j+1) == '#') {
+                c = 'v'
+            } else {
+                if (grid.getAt(i, j) == '>') return true
+                grid.setAt(i, j, '>')
+                j++
+            }
+            break;
+        case 'v':
+            if (grid.getAt(i+1, j) == '#') {
+                c = '<'
+            } else {
+                if (grid.getAt(i, j) == 'v') return true
+                grid.setAt(i, j, 'v')
+                i++
+            }
+            break;
+        case '<':
+            if (grid.getAt(i, j-1) == '#') {
+                c = '^'
+            } else {
+                if (grid.getAt(i, j) == '<') return true
+                grid.setAt(i, j, '<')
+                j--
+            }
+            break;
+        }
+    }
+
+    return false
 }
 
 function partB(info) {
+    let start = Date.now()
     let sum = 0
+     for ([i, j] of info.indexes()) {
+
+        if (info[i][j] != '.') continue
+
+        let thisInfo = info.copy()
+        thisInfo.setAt(i, j, '#')
+        if (isLoop(thisInfo)) {
+            console.log('loop at', i, j)
+            sum++
+        }
+    }
+
+    console.log('time:', '' + (Date.now() - start) + 'ms')
     return sum
 }
 
-console.log(partA(test))
+
+
+
+// console.log(partA(test))
 // console.log(partA(input))
 // console.log('--')
 // console.log(partB(test))
-// console.log(partB(input))
+console.log(partB(input))

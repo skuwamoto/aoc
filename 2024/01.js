@@ -14,8 +14,8 @@ input = parse(input)
 
 function partA(info) {
     let [a,b] = info
-    a.sort((x,y) => x-y)
-    b.sort((x,y) => x-y)
+    a.nsort()
+    b.nsort()
 
     let sum = 0
     for (i=0; i<a.length; i++) {
