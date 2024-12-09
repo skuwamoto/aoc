@@ -218,6 +218,10 @@ Array.prototype.gridFindAll = function (c) {
     return result
 }
 
+Array.prototype.count = function(c) {
+    return this.gridFindAll(c).length
+}
+
 
 
 // Print [['a','b','c'], ['d','e','f']] => "abc\ndef"

@@ -1,10 +1,11 @@
 const fs = require('fs');
-const u = require('./util')
+const u = require('./util2')
 
 let test = fs.readFileSync('./test09.txt', {encoding:'utf8', flag:'r'});
 let input = fs.readFileSync('./input09.txt', {encoding:'utf8', flag:'r'});
 
 function parse(lines) {
+
     lines = lines.split('\n').map(x => x.split(''))
     return lines
 }

@@ -49,24 +49,28 @@ function toNumber(s) {
 String.prototype.toNumber = function() { return toNumber(this) }
 
 class Grid {
-    h=0
-    w=0
     storage = [[]]
 
     constructor (h, w, c=null) {
         if (typeof h == 'string') {
             let str = h
             this.storage = str.split('\n').map(x => x.split(''))
-            this.h = this.storage.length
-            this.w = this.storage[0].length
+        } else if (Array.isArray(h)) {
+            this.storage = h
         } else {
-            this.h = h
-            this.w = w
             this.storage = []
             for (let i=0; i < h; i++) {
                 this.storage.push(Array(w).fill(c))
             }
         }
+    }
+
+    h() {
+        return this.storage.length
+    }
+
+    w() {
+        return this.storage[0].length
     }
 
     toString() {
@@ -85,54 +89,52 @@ class Grid {
     // Fill a grid with a character
     fill(c) {
         this.storage = []        
-        for (let i=0; i < this.h; i++) {
-            this.storage.push(Array(this.w).fill(c))
+        for (let i=0; i < this.h(); i++) {
+            this.storage.push(Array(this.w()).fill(c))
         }
     }
 
     // Copy a grid
     copy() {
-        let g = new Grid(this.h, this.w)
-        for (let [i, j, v] of this.indexes()) {
-            g.setAt(i, j, v)
+        let s = []
+        for (let i=0; i < this.h(); i++) {
+            s.push(this.storage[i].concat())
         }
-        return g
+        return new Grid(s)
     }
 
     // Make an empty grid or strGrid that is the same size
     copyEmpty(c=null) {
-        return new Grid(this.h, this.w, c)
+        return new Grid(this.h(), this.w(), c)
     }
 
     // Make a transposed copy of a grid or strGrid
     transpose() {
-        let g = new Grid(this.w, this.h)
+        let g = new Grid(this.w(), this.h())
         for (let [i, j] of this.indexes()) {
             g.setAt(j, i, this.getAt(i, j))
         }
         return g
     }
 
-
-
     // Get an element from the grid. 
     // if out of bounds, will return undefind.
     getAt(i, j) {
-        if (i < 0 || i >= this.h || j < 0 || j >= this.w) return undefined
+        if (i < 0 || i >= this.h() || j < 0 || j >= this.w()) return undefined
         return this.storage[i][j]
     }
 
     // Set a space in the grid to c
     setAt(i, j, c) {
-        if (i < 0 || i >= this.h || j < 0 || j >= this.w) {
-            // console.log('tried to write at position', i, j, 'when grid is only', this.h, this.w)
+        if (i < 0 || i >= this.h() || j < 0 || j >= this.w()) {
+            // console.log('tried to write at position', i, j, 'when grid is only', this.h(), this.w())
         }
         this.storage[i][j] = c
     }
 
     col(j) {
         let r = []
-        for (let i=0; i < this.h; i++) {
+        for (let i=0; i < this.h(); i++) {
             r.push(this.getAt(i, j))
         }
         return r
@@ -140,18 +142,18 @@ class Grid {
 
     row(i) {
         let r = []
-        for (let i=j; i < this.w; j++) {
+        for (let i=j; i < this.w(); j++) {
             r.push(this.getAt(i, j))
         }
         return r
     }
 
     equals(g) {
-        if (this.w != g.w) return false
-        if (this.h != g.h) return false
+        if (this.w() != g.w()) return false
+        if (this.h() != g.h()) return false
 
-        for (let [i, j, v] of this.indexes()) {
-            if (v != g.getAt(i, j)) return false
+        for (let [i, j] of this.indexes()) {
+            if (this.getAt(i, j) != g.getAt(i, j)) return false
         }
         return true
     }
@@ -159,9 +161,12 @@ class Grid {
     // signature: f(value, i, j, originalGrid) => boolean
     find(c) {
         let f = (typeof c == 'function') ? c : (v, i, j, g) => { return v == c }
-        for (let [i, j, v] of this.indexes()) {
+
+        for (let [i, j] of this.indexes()) {
+            let v = this.getAt(i, j)
             if (f(v,i,j,this)) return [i, j, v]
         }
+
         return null
     }
 
@@ -169,7 +174,8 @@ class Grid {
     findAll(c) {
         let result = []
         let f = (typeof c == 'function') ? c : (v, i, j, g) => { return v == c }
-        for (let [i, j, v] of this.indexes()) {
+        for (let [i, j] of this.indexes()) {
+            let v = this.getAt(i, j)
             if (f(v,i,j,this)) result.push([i, j, v])
         }
         return result
@@ -179,15 +185,29 @@ class Grid {
     // => [ [0, 0, val1], [0, 1, val2], .... [n-1, n-1, valn] ]
     indexes() {
         let r = []
-        this.forEach((v,i,j) => r.push([i, j, v]))
+        for (let i=0; i < this.h(); i++) {
+            for (let j=0; j < this.w(); j++) {
+                r.push([i, j])
+            }
+        }
+        return r
+    }
+
+    indexesAndValues() {
+        let r = []
+        for (let i=0; i < this.h(); i++) {
+            for (let j=0; j < this.w(); j++) {
+                r.push([i, j, this.getAt(i, j)])
+            }
+        }
         return r
     }
 
     // Calls a function for every element in the grid.
     // signature: f(value, i, j, originalGrid)
     forEach(f) {
-        for (let i=0; i < this.h; i++) {
-            for (let j=0; j < this.w; j++) {
+        for (let i=0; i < this.h(); i++) {
+            for (let j=0; j < this.w(); j++) {
                 f(this.getAt(i,j), i, j, this)
             }
         }
@@ -204,7 +224,7 @@ class Grid {
     // Checks to see if a function returns true for every element of the grid
     // signature: f(value, i, j, originalGrid) => boolean
     every(f) {
-        return this.count(f) == this.h * this.w
+        return this.count(f) == this.h() * this.w()
     }
 
     // Counts how many times a function returns true
@@ -222,7 +242,7 @@ class Grid {
         let r = []
         for (let ii = i-1; ii <= i+1; ii++) {
             for (let jj = j-1; jj <= j+1; jj++) {
-                if (ii >= 0 && jj >= 0 && ii < this.h && jj < this.w && !(i == ii && j == jj)) {
+                if (ii >= 0 && jj >= 0 && ii < this.h() && jj < this.w() && !(i == ii && j == jj)) {
                     if (diagonalOk || ii == i || jj == j) {
                         r.push([ii, jj, this.getAt(ii, jj)])
                     }

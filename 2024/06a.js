@@ -17,7 +17,7 @@ console.log()
 function partA(info) {
     let c = '^'
     let [i, j] = info.find(c)
-    while (i >= 0 && i < info.h && j >= 0 && j <= info.w) {
+    while (i >= 0 && i < info.h() && j >= 0 && j <= info.w()) {
         switch (c) {
         case '^':
             if (info.getAt(i-1, j) == '#') {
@@ -63,7 +63,7 @@ function isLoop(grid) {
     let [i, j] = grid.find(c)
     grid.setAt(i, j, '.')
 
-    while (i >= 0 && i < grid.h && j >= 0 && j <= grid.w) {
+    while (i >= 0 && i < grid.h() && j >= 0 && j <= grid.w()) {
         switch (c) {
         case '^':
             if (grid.getAt(i-1, j) == '#') {
@@ -110,9 +110,8 @@ function isLoop(grid) {
 function partB(info) {
     let start = Date.now()
     let sum = 0
-    for ([i, j, v] of info.indexes()) {
-
-        if (v != '.') continue
+    for ([i, j] of info.indexes()) {
+        if (info.getAt(i, j) != '.') continue
 
         let thisInfo = info.copy()
         thisInfo.setAt(i, j, '#')
