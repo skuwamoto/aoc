@@ -1,14 +1,20 @@
 const fs = require('fs');
 const u = require('./util2')
 
+let Grid = u.Grid
+
 let test = fs.readFileSync('./test09.txt', {encoding:'utf8', flag:'r'});
 let input = fs.readFileSync('./input09.txt', {encoding:'utf8', flag:'r'});
 
 function parse(lines) {
+    return new Grid(lines)
 
     lines = lines.split('\n').map(x => x.split(''))
     return lines
 }
+
+let foo = parse('abc')
+foo.print()
 
 test = parse(test)
 input = parse(input)

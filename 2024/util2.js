@@ -181,6 +181,11 @@ class Grid {
         return result
     }
 
+    // signature: f(value, i, j, originalGrid) => boolean
+    count(c) {
+        this.findAll(c).length
+    }
+
     // Returns a one dimensional list of indexes (+ value)
     // => [ [0, 0, val1], [0, 1, val2], .... [n-1, n-1, valn] ]
     indexes() {
