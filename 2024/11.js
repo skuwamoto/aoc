@@ -12,20 +12,13 @@ function parse(lines) {
 test = parse(test)
 input = parse(input)
 
-// test.print()
-console.log()
-
-// test = test.stringToGrid()
-// input = input.stringToGrid()
-
-// test.print()
-
 function func(arr) {
     let r = []
 
     for (a of arr) {
-        if (a=='0') r.push('1') 
-        else if (a.length % 2 == 0) {
+        if (a=='0') {
+            r.push('1') 
+        } else if (a.length % 2 == 0) {
             r.push('' + Number(a.substring(0, a.length/2)))
             r.push('' + Number(a.substring(a.length/2)))
         } else {
@@ -45,8 +38,7 @@ function func2(a, num) {
     let r
     if (num == 0) {
         r = 1
-    }
-    else if (a == '0') {
+    } else if (a == '0') {
         r = func2('1', num-1)
     } else if (a.length % 2 == 0) {
         r = func2('' + Number(a.substring(0, a.length/2)), num-1) +
@@ -56,6 +48,23 @@ function func2(a, num) {
     }
 
     map[key] = r
+    return r
+}
+
+function func3(map) {
+    let r = new Map()
+
+    for (let [k, v] of map.entries()) {
+        if (k == '0') {
+            r.add('1', v)
+        } else if (k.length % 2 == 0) {
+            r.add(String(Number(k.substring(0, k.length/2))), v)
+            r.add(String(Number(k.substring(k.length/2))), v)
+        } else {
+            r.add(String(2024 * Number(k)), v)
+        }
+    }
+
     return r
 }
 
@@ -80,9 +89,22 @@ function partB(info) {
     return sum
 }
 
+function partB2(info) {
+    let map = info.toMap()
+
+    for (let i=0; i<75; i++) {
+        map = func3(map)
+    }
+
+    return map.sum()
+}
+
 
 console.log(partA(test))
 console.log(partA(input))
 console.log('--')
 console.log(partB(test))
 console.log(partB(input))
+console.log('--')
+console.log(partB2(test))
+console.log(partB2(input))

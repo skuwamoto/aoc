@@ -458,6 +458,38 @@ Array.prototype.popAt = function (i) {
     return r
 }
 
+Array.prototype.toMap = function () {
+    let r = new Map()
+
+    for (let a of this) {
+        r.add(a, 1)
+    }
+    return r
+}
+
+Map.prototype.add = function(elem, val) {
+    if (!this.get(elem)) this.set(elem, 0)
+    this.set(elem, this.get(elem) + val)
+}
+
+Map.prototype.sum = function() {
+    return [...this.values()].sum()
+}
+
+function parseNums(str, allowFloat=false, allowNegative=false) {
+    let regex = 
+        (allowFloat && allowNegative)  ? /[^0-9\.\-]+/g :
+        (!allowFloat && allowNegative) ? /[^0-9\-]+/g :
+        (allowFloat && !allowNegative) ? /[^0-9\.]+/g :
+                                         /[^0-9]+/g
+
+    return str.replace(regex, ' ').trim(' ').split(' ').map(Number)
+}
+
+function parseFloats(str) {
+    return str.replace(/^[0-9\.]/g, ' ').trim(' ').split(' ').map(Number)
+}
+
 class PriorityQueue {
     constructor(comparator = (a, b) => a > b) {
         this._heap = [];
@@ -547,5 +579,6 @@ module.exports = {
     gcd2,
     lcm, 
     gcd,
+    parseNums,
     PriorityQueue
 }
