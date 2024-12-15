@@ -120,12 +120,21 @@ class Grid {
     // Get an element from the grid. 
     // if out of bounds, will return undefind.
     getAt(i, j) {
+        if (Array.isArray(i)) {
+            j = i[1]
+            i = i[0]
+        }
         if (i < 0 || i >= this.h() || j < 0 || j >= this.w()) return undefined
         return this.storage[i][j]
     }
 
     // Set a space in the grid to c
     setAt(i, j, c) {
+        if (Array.isArray(i)) {
+            c = j
+            j = i[1]
+            i = i[0]
+        }
         if (i < 0 || i >= this.h() || j < 0 || j >= this.w()) {
             // console.log('tried to write at position', i, j, 'when grid is only', this.h(), this.w())
         }
