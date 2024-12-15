@@ -8,6 +8,7 @@ let input = fs.readFileSync('./input13.txt', {encoding:'utf8', flag:'r'});
 function parse(lines) {
     lines = lines.split('\n\n').map(x => { 
         // let l = x.split('\n'); 
+
         // let xa = l[0].between('X+', ',')
         // let ya = l[0].after('Y+') 
 
