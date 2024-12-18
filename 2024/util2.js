@@ -496,7 +496,7 @@ function parseNums(str, allowFloat=false, allowNegative=false) {
 }
 
 function parseFloats(str) {
-    return str.replace(/^[0-9\.]/g, ' ').trim(' ').split(' ').map(Number)
+    return str.replace(/[^0-9\.\-]/g, ' ').trim(' ').split(' ').map(Number)
 }
 
 class PriorityQueue {
@@ -589,5 +589,6 @@ module.exports = {
     lcm, 
     gcd,
     parseNums,
+    parseFloats,
     PriorityQueue
 }
