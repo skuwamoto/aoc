@@ -252,13 +252,21 @@ class Grid {
 
     // Returns the neighbors that are within the grid (including diagonals)
     // => [ [i-1, j-1, val1], [i, j-1, val2], .... [i+1, j+1, valnn] ]
-    neighbors(i, j, diagonalOk = true) {
+    neighbors(i, j, diagonalOk = false, addValues = false) {
+        if (Array.isArray(i)) {
+            diagonalOk = j
+            j = i[1]
+            i = i[0]
+        }
+
         let r = []
         for (let ii = i-1; ii <= i+1; ii++) {
             for (let jj = j-1; jj <= j+1; jj++) {
                 if (ii >= 0 && jj >= 0 && ii < this.h() && jj < this.w() && !(i == ii && j == jj)) {
                     if (diagonalOk || ii == i || jj == j) {
-                        r.push([ii, jj, this.getAt(ii, jj)])
+                        let next = [ii, jj]
+                        if (addValues) (next.push(this.getAt(next)))
+                        r.push(next)
                     }
                 }
             }
@@ -439,7 +447,7 @@ Array.prototype.minIndex = function (compare = (a,b) => a-b) {
             best = i
         }
     }
-    return i
+    return best
 }
 
 Array.prototype.maxIndex = function (compare = (a,b) => a-b) {
@@ -450,7 +458,7 @@ Array.prototype.maxIndex = function (compare = (a,b) => a-b) {
             best = i
         }
     }
-    return i
+    return best
 }
 
 Array.prototype.min = function (compare = (a,b) => a-b) {
