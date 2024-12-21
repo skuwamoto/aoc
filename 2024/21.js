@@ -145,6 +145,46 @@ function doOnePad(seq, posFunc) {
     return result
 }
 
+function doPadB(seq, posFunc) {
+    // Get the current pos of the arm.
+    let badRow = posFunc('A')[0]
+    let cur = posFunc('A')
+    let result = ''
+
+    // console.log('getting sequence for', seq)
+
+    // For each letter in the sequence
+    for (s of seq) {
+        // console.log('trying', s)
+        // Generate a move that goes to that letter.
+        let next = posFunc(s)
+        let move = []
+
+        // If this is on a row with the bad square, we 
+        // go vertical first, then horizontal.
+        // Ortherwise, the reverse.
+        if (cur[0] == badRow) {
+            while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
+            while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+            while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+            while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+        } else {
+            while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+            while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+            while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
+            while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+        }
+
+        // Generate all unique permutations of that move.
+        result += move.join('') + 'A'
+    }
+
+    // console.log('result =', result)
+    // console.log()
+
+    return result
+}
+
 function numericPad(seq) {
     return doPad(seq, numPos)
 }
@@ -157,6 +197,13 @@ function oneDirPad(seq) {
     return doOnePad(seq, dirPos)
 }
 
+function numericPadB(seq) {
+    return doPadB(seq, numPos)
+}
+
+function dirPadB(seq) {
+    return doPadB(seq, dirPos)
+}
 
 // Move from initial position (A) using <>^vA
 
@@ -233,6 +280,25 @@ function complexity(code) {
     return bestThird[0].length
 }
 
+
+function complexityB(code) {
+    // Get a sequence for the first robot.
+    let first = numericPadB(code)
+
+    console.log('first', first)
+    
+    // Get a sequence for the second robot.
+    let second = dirPadB(seq)
+
+    console.log('second', second)
+
+    let third = dirPadB(seq)
+
+    console.log('third', third)
+
+    return third.length
+}
+
 function partA(info) {
     let sum = 0
 
@@ -248,6 +314,14 @@ function partA(info) {
 
 function partB(info) {
     let sum = 0
+
+    for (let code of info) {
+        let c = complexityB(code)
+        let num = Number(code.substring(0,code.length-1))
+
+        console.log('code', code, 'complexity', c, 'number', num)
+        sum += c * num
+    }
     return sum
 }
 
