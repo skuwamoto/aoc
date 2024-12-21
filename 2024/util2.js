@@ -254,6 +254,7 @@ class Grid {
     // => [ [i-1, j-1, val1], [i, j-1, val2], .... [i+1, j+1, valnn] ]
     neighbors(i, j, diagonalOk = false, addValues = false) {
         if (Array.isArray(i)) {
+            addValues = diagonalOk
             diagonalOk = j
             j = i[1]
             i = i[0]
