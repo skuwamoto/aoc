@@ -81,7 +81,7 @@ function partAA(grid) {
 
     let results = []
 
-        for (let wall of grid.findAll('#')) {
+    for (let wall of grid.findAll('#')) {
         grid.setAt(wall, '1')
         // grid.setAt(next, '2')
 
