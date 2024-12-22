@@ -145,6 +145,110 @@ function doOnePad(seq, posFunc) {
     return result
 }
 
+function numericPad(seq) {
+    return doPad(seq, numPos)
+}
+
+function dirPad(seq) {
+    return doPad(seq, dirPos)
+}
+
+function oneDirPad(seq) {
+    return doOnePad(seq, dirPos)
+}
+
+function numericPadB(seq) {
+    return doPadB(seq, numPos)
+}
+
+function dirPadB(seq) {
+    return doPadB(seq, dirPos)
+}
+
+function numericPadBB(map) {
+    return doPadBB(map, numPos)
+}
+
+function dirPadBB(map) {
+    return doPadBB(map, dirPos)
+}
+
+// Move from initial position (A) using <>^vA
+
+
+// First robot presses numerical keys
+// Second robot controls first robot's arm
+// Third robot presses second robot's arm
+
+
+function complexity(code) {
+    // Get all possible numpad for first robot.
+    let first = numericPad(code)
+
+    console.log(0, first[0])
+    
+    // Get all possible dirpad for second robot.
+    let second = first.map(seq => dirPad(seq))
+    let best = 100000000000000000000
+
+    // Find shortest sequence.
+    for (let s of second) {
+        if (s[0].length < best) {
+            best = s[0].length
+        }
+    }
+
+    // Gather all shortest sequences.
+    let bestSecond = []
+    for (let s of second) {
+        for (let si of s) {
+            if (si.length == best) {
+                bestSecond.push(si)
+            }            
+        }
+    }
+
+    console.log(1, bestSecond[0])
+
+    // // Get one possible dirpad for third robot.
+    // let third = bestSecond.map(seq => oneDirPad(seq))
+    // best = 100000000000000000000
+
+    // // Find shortest sequence.
+    // for (let t of third) {
+    //     if (t.length < best) {
+    //         best = t.length
+    //     }
+    // }
+
+    // return best
+
+    let third = bestSecond.map(seq => dirPad(seq))
+    best = 100000000000000000000
+
+    // Find shortest sequence.
+    for (let t of third) {
+        if (t[0].length < best) {
+            best = t[0].length
+        }
+    }
+
+    // Gather all shortest sequences.
+    let bestThird = []
+    for (let t of third) {
+        for (let ti of t) {
+            if (ti.length == best) {
+                bestThird.push(ti)
+            }            
+        }
+    }
+
+    console.log(2, bestThird[0])
+
+    return bestThird[0].length
+}
+
+
 function doPadB(seq, posFunc) {
     // Get the current pos of the arm.
     let badRow = posFunc('A')[0]
@@ -185,118 +289,157 @@ function doPadB(seq, posFunc) {
     return result
 }
 
-function numericPad(seq) {
-    return doPad(seq, numPos)
-}
-
-function dirPad(seq) {
-    return doPad(seq, dirPos)
-}
-
-function oneDirPad(seq) {
-    return doOnePad(seq, dirPos)
-}
-
-function numericPadB(seq) {
-    return doPadB(seq, numPos)
-}
-
-function dirPadB(seq) {
-    return doPadB(seq, dirPos)
-}
-
-// Move from initial position (A) using <>^vA
-
-
-// First robot presses numerical keys
-// Second robot controls first robot's arm
-// Third robot presses second robot's arm
-
-
-function complexity(code) {
-    // Get all possible numpad for first robot.
-    let first = numericPad(code)
-
-    console.log('first', first)
-    
-    // Get all possible dirpad for second robot.
-    let second = first.map(seq => dirPad(seq))
-    let best = 100000000000000000000
-
-    // Find shortest sequence.
-    for (let s of second) {
-        if (s[0].length < best) {
-            best = s[0].length
-        }
-    }
-
-    // Gather all shortest sequences.
-    let bestSecond = []
-    for (let s of second) {
-        for (let si of s) {
-            if (si.length == best) {
-                bestSecond.push(si)
-            }            
-        }
-    }
-
-    console.log('second', bestSecond)
-
-    // // Get one possible dirpad for third robot.
-    // let third = bestSecond.map(seq => oneDirPad(seq))
-    // best = 100000000000000000000
-
-    // // Find shortest sequence.
-    // for (let t of third) {
-    //     if (t.length < best) {
-    //         best = t.length
-    //     }
-    // }
-
-    // return best
-
-    let third = bestSecond.map(seq => dirPad(seq))
-    best = 100000000000000000000
-
-    // Find shortest sequence.
-    for (let t of third) {
-        if (t[0].length < best) {
-            best = t[0].length
-        }
-    }
-
-    // Gather all shortest sequences.
-    let bestThird = []
-    for (let t of third) {
-        for (let ti of t) {
-            if (ti.length == best) {
-                bestThird.push(ti)
-            }            
-        }
-    }
-
-    console.log('third', bestThird)
-
-    return bestThird[0].length
-}
-
-
-function complexityB(code) {
+function complexityB(code, n) {
     // Get a sequence for the first robot.
     let first = numericPadB(code)
 
-    console.log('first', first)
-    
-    // Get a sequence for the second robot.
-    let second = dirPadB(seq)
+    console.log(0, first)
 
-    console.log('second', second)
+    let current = first
+    for (let i=0; i < n; i++) {
+        current = dirPadB(current)
+        console.log(i+1, current)
+    }
+    return current.length
+}
 
-    let third = dirPadB(seq)
 
-    console.log('third', third)
+function doPadBB(map, posFunc) {
+    // Get the current pos of the arm.
+    let badRow = posFunc('A')[0]
+    let result = new Map()
+    let cur = posFunc('A')
 
-    return third.length
+    // console.log('getting sequence for', seq)
+
+    // For each letter in the sequence
+    for (let seq of map.keys()) {
+        for (let s of seq) {
+            // console.log('trying', s)
+            // Generate a move that goes to that letter.
+            let next = posFunc(s)
+            let move = []
+
+            // If this is on a row with the bad square, we 
+            // go vertical first, then horizontal.
+            // Ortherwise, the reverse.
+            if (cur[0] == badRow) {
+                while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
+                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+            } else {
+                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+                while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
+                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+            }
+
+            // condense the move into a string
+            move = move.join('') + 'A'
+
+            // store it in the map
+            let prev = result.has(move) ? result.get(move) : 0
+            result.set(move, prev+map.get(seq))
+        }
+    }
+
+    // Returns a map of all sequences found in the moves.
+    return result
+}
+
+function complexityBB(code, n) {
+    // Get a sequence for the first robot.
+    let map = new Map()
+    map.set(code, 1)
+    let first = numericPadBB(map)
+
+    console.log(0, first)
+
+    let current = first
+    for (let i=0; i < n; i++) {
+        current = dirPadBB(current)
+        console.log(i+1, current)
+    }
+
+    // the length = the length of all keys * number of times used
+    let sum = 0
+    for (let seq of current.keys()) {
+        sum += seq.length * current.get(seq)
+    }
+    return sum
+}
+
+
+
+function doPadBBB(map, posFunc) {
+    // Get the current pos of the arm.
+    let badRow = posFunc('A')[0]
+    let result = new Map()
+
+    // console.log('getting sequence for', seq)
+
+    // For each letter in the sequence
+    for (let seq of map.keys()) {
+        let curLetter = 'A'
+        let cur = posFunc('A')
+
+        for (let s of seq) {
+            // console.log('trying', s)
+            // Generate a move that goes to that letter.
+            let next = posFunc(s)
+            let move = []
+
+            // If this is on a row with the bad square, we 
+            // go vertical first, then horizontal.
+            // Ortherwise, the reverse.
+            if (posFunc == numPos && cur[0] == badRow || curLetter == '^' && s == '>' || curLetter == 'v' && s == 'A' || curLetter == 'A' && s == '<') {
+                while (cur[0] < next[0]) { move.push('v'); cur[0 ]++ }
+                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+            } else {
+                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
+                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
+                while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
+                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
+            }
+
+            let curLetter = s
+
+            // condense the move into a string
+            move = move.join('') + 'A'
+
+            // store it in the map
+            let prev = result.has(move) ? result.get(move) : 0
+            result.set(move, prev+map.get(seq))
+        }
+    }
+
+    // Returns a map of all sequences found in the moves.
+    return result
+}
+
+function complexityBB(code, n) {
+    // Get a sequence for the first robot.
+    let map = new Map()
+    map.set(code, 1)
+    let first = numericPadBB(map)
+
+    console.log(0, first)
+
+    let current = first
+    for (let i=0; i < n; i++) {
+        current = dirPadBB(current)
+        console.log(i+1, current)
+    }
+
+    // the length = the length of all keys * number of times used
+    let sum = 0
+    for (let seq of current.keys()) {
+        sum += seq.length * current.get(seq)
+    }
+    return sum
 }
 
 function partA(info) {
@@ -316,7 +459,20 @@ function partB(info) {
     let sum = 0
 
     for (let code of info) {
-        let c = complexityB(code)
+        let c = complexityB(code, 2)
+        let num = Number(code.substring(0,code.length-1))
+
+        console.log('code', code, 'complexity', c, 'number', num)
+        sum += c * num
+    }
+    return sum
+}
+
+function partBB(info) {
+    let sum = 0
+
+    for (let code of info) {
+        let c = complexityBB(code, 2)
         let num = Number(code.substring(0,code.length-1))
 
         console.log('code', code, 'complexity', c, 'number', num)
@@ -327,6 +483,7 @@ function partB(info) {
 
 // console.log(partA(test))
 console.log(partA(input))
-// console.log('--')
-// console.log(partB(test))
-// console.log(partB(input))
+console.log('------------------------')
+console.log(partB(input))
+console.log('------------------------')
+console.log(partBB(input))
