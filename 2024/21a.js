@@ -43,10 +43,10 @@ function dirPos(c) {
     }
 }
 
-function vecEqual(a, b) { return a[0] == b[0] && a[1] == b[1] }
+function equal(a, b) { return a[0] == b[0] && a[1] == b[1] }
 
 function allMoves(from, to, posFunc) {
-    if (vecEqual(from, to)) return ['A']
+    if (equal(from, to)) return ['A']
 
     let moves = []
     let blankPos = posFunc(' ')
@@ -55,7 +55,7 @@ function allMoves(from, to, posFunc) {
         let next = [from[0] + Math.sign(to[0]-from[0]), from[1]]
         let nextChar = to[0] > from[0] ? 'v' : '^'
 
-        if (!vecEqual(next, blankPos)) {
+        if (!equal(next, blankPos)) {
             allMoves(next, to, posFunc).forEach(m => {
                 moves.push(nextChar + m)
             })
@@ -66,7 +66,7 @@ function allMoves(from, to, posFunc) {
         let next = [from[0], from[1] + Math.sign(to[1]-from[1])]
         let nextChar = to[1] > from[1] ? '>' : '<'
 
-        if (!vecEqual(next, blankPos)) {
+        if (!equal(next, blankPos)) {
             allMoves(next, to, posFunc).forEach(m => {
                 moves.push(nextChar + m)
             })
@@ -111,71 +111,38 @@ function dirPad(seq) {
     return doPad(seq, dirPos)
 }
 
-function complexity(code) {
+function complexity(code, n) {
     // Get all possible numpad for first robot.
     let first = numPad(code)
 
     console.log(0, first[0])
     
-    // Get all possible dirpad for second robot.
-    let second = first.map(seq => dirPad(seq))
-    let best = 100000000000000000000
+    let current = first
+    for (let i=0; i < n; i++) {
+        // Get all possible dirpad for next robot.
+        let next = current.map(seq => dirPad(seq))
+        let best = 100000000000000000000
 
-    // Find shortest sequence.
-    for (let s of second) {
-        if (s[0].length < best) {
-            best = s[0].length
-        }
+        // Find shortest sequence.
+        next.forEach(s => {
+            best = Math.min(best, s[0].length)
+        })
+
+        // Gather all shortest sequences.
+        let bestNext = []
+        next.forEach(s => {
+            s.forEach(si => {
+                if (si.length == best) {
+                    bestNext.push(si)
+                }            
+            })
+        })
+
+        console.log(n+1, bestNext[0])
+        current = bestNext
     }
 
-    // Gather all shortest sequences.
-    let bestSecond = []
-    for (let s of second) {
-        for (let si of s) {
-            if (si.length == best) {
-                bestSecond.push(si)
-            }            
-        }
-    }
-
-    console.log(1, bestSecond[0])
-
-    // // Get one possible dirpad for third robot.
-    // let third = bestSecond.map(seq => oneDirPad(seq))
-    // best = 100000000000000000000
-
-    // // Find shortest sequence.
-    // for (let t of third) {
-    //     if (t.length < best) {
-    //         best = t.length
-    //     }
-    // }
-
-    // return best
-
-    let third = bestSecond.map(seq => dirPad(seq))
-    best = 100000000000000000000
-
-    // Find shortest sequence.
-    for (let t of third) {
-        if (t[0].length < best) {
-            best = t[0].length
-        }
-    }
-
-    // Gather all shortest sequences.
-    let bestThird = []
-    for (let t of third) {
-        for (let ti of t) {
-            if (ti.length == best) {
-                bestThird.push(ti)
-            }            
-        }
-    }
-
-    console.log(2, bestThird[0])
-
-    return bestThird[0].length
+    return current[0].length
 }
 
 
