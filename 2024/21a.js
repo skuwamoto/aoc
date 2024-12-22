@@ -43,57 +43,10 @@ function dirPos(c) {
     }
 }
 
-function allMoves(from, to, posFunc) {
-    let move = []
-    let cur = from.concat()
-    let orig = cur.concat()
-
-    while (cur[0] < to[0]) { move.push('v'); cur[0]++ }
-    while (cur[0] > to[0]) { move.push('^'); cur[0]-- }
-    while (cur[1] < to[1]) { move.push('>'); cur[1]++ }
-    while (cur[1] > to[1]) { move.push('<'); cur[1]-- }
-
-    // Generate all unique permutations of that move.
-    move = move.join('')
-
-    let moves = move.permute().unique()
-
-    // Filter out sequences that touch the danger square.
-    let badPos = posFunc(' ')
-    moves = moves.filter(m => {
-        let pos = orig.concat()
-        let bad = false
-        for (let mi of m) {
-            switch (mi) {
-            case '<':
-                pos[1] -= 1
-                break
-            case '>':
-                pos[1] += 1
-                break
-            case '^':
-                pos[0] -= 1
-                break
-            case 'v':
-                pos[0] += 1
-                break
-            }
-            if (pos[0] == badPos[0] && pos[1] == badPos[1]) {
-                bad = true
-            }
-        }
-        return !bad
-    })
-
-    if (moves.length == 0) moves = ['']
-
-    return moves
-}
-
 function vecEqual(a, b) { return a[0] == b[0] && a[1] == b[1] }
 
-function allMoves2(from, to, posFunc) {
-    if (vecEqual(from, to)) return ['']
+function allMoves(from, to, posFunc) {
+    if (vecEqual(from, to)) return ['A']
 
     let moves = []
     let blankPos = posFunc(' ')
@@ -103,7 +56,7 @@ function allMoves2(from, to, posFunc) {
         let nextChar = to[0] > from[0] ? 'v' : '^'
 
         if (!vecEqual(next, blankPos)) {
-            allMoves2(next, to, posFunc).forEach(m => {
+            allMoves(next, to, posFunc).forEach(m => {
                 moves.push(nextChar + m)
             })
         }
@@ -114,7 +67,7 @@ function allMoves2(from, to, posFunc) {
         let nextChar = to[1] > from[1] ? '>' : '<'
 
         if (!vecEqual(next, blankPos)) {
-            allMoves2(next, to, posFunc).forEach(m => {
+            allMoves(next, to, posFunc).forEach(m => {
                 moves.push(nextChar + m)
             })
         }
@@ -136,9 +89,6 @@ function doPad(seq, posFunc) {
 
         let moves = allMoves(cur, next, posFunc)
 
-        // Add an 'A' to the end of every move.
-        moves = moves.map(x => x + 'A')
-
         // Add each of these onto every sequence already in the result.
         let nextResult = []
         for (let r of result) {
@@ -150,13 +100,10 @@ function doPad(seq, posFunc) {
         result = nextResult
     }
 
-    // console.log('result =', result)
-    // console.log()
-
     return result
 }
 
-function numericPad(seq) {
+function numPad(seq) {
     return doPad(seq, numPos)
 }
 
@@ -166,7 +113,7 @@ function dirPad(seq) {
 
 function complexity(code) {
     // Get all possible numpad for first robot.
-    let first = numericPad(code)
+    let first = numPad(code)
 
     console.log(0, first[0])
     
@@ -276,7 +223,7 @@ function doPadBB(map, posFunc) {
     return result
 }
 
-function numericPadBB(map) {
+function numPadBB(map) {
     return doPadBB(map, numPos)
 }
 
@@ -343,7 +290,7 @@ function doPadBBB(map, posFunc) {
 
 function complexityBB(code, n) {
     // Get a sequence for the first robot.
-    let first = numericPad(code)
+    let first = numPad(code)
 
     console.log(0, first)
 
