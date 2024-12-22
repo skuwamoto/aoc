@@ -90,6 +90,40 @@ function allMoves(from, to, posFunc) {
     return moves
 }
 
+function vecEqual(a, b) { return a[0] == b[0] && a[1] == b[1] }
+
+function allMoves2(from, to, posFunc) {
+    if (vecEqual(from, to)) return ['']
+
+    let moves = []
+    let blankPos = posFunc(' ')
+
+    if (from[0] != to[0]) {
+        let next = [from[0] + Math.sign(to[0]-from[0]), from[1]]
+        let nextChar = to[0] > from[0] ? 'v' : '^'
+
+        if (!vecEqual(next, blankPos)) {
+            allMoves2(next, to, posFunc).forEach(m => {
+                moves.push(nextChar + m)
+            })
+        }
+    }
+
+    if (from[1] != to[1]) {
+        let next = [from[0], from[1] + Math.sign(to[1]-from[1])]
+        let nextChar = to[1] > from[1] ? '>' : '<'
+
+        if (!vecEqual(next, blankPos)) {
+            allMoves2(next, to, posFunc).forEach(m => {
+                moves.push(nextChar + m)
+            })
+        }
+    }
+
+    return moves
+}
+
+
 function doPad(seq, posFunc) {
     // Get the current pos of the arm.
     let cur = posFunc('A')
@@ -376,4 +410,4 @@ console.log(partA(input))
 console.log('------------------------')
 // console.log(partB(input))
 console.log('------------------------')
-console.log(partBB(input))
+// console.log(partBB(input))
