@@ -43,64 +43,67 @@ function dirPos(c) {
     }
 }
 
+function allMoves(from, to, posFunc) {
+    let move = []
+    let cur = from.concat()
+    let orig = cur.concat()
+
+    while (cur[0] < to[0]) { move.push('v'); cur[0]++ }
+    while (cur[0] > to[0]) { move.push('^'); cur[0]-- }
+    while (cur[1] < to[1]) { move.push('>'); cur[1]++ }
+    while (cur[1] > to[1]) { move.push('<'); cur[1]-- }
+
+    // Generate all unique permutations of that move.
+    move = move.join('')
+
+    let moves = move.permute().unique()
+
+    // Filter out sequences that touch the danger square.
+    let badPos = posFunc(' ')
+    moves = moves.filter(m => {
+        let pos = orig.concat()
+        let bad = false
+        for (let mi of m) {
+            switch (mi) {
+            case '<':
+                pos[1] -= 1
+                break
+            case '>':
+                pos[1] += 1
+                break
+            case '^':
+                pos[0] -= 1
+                break
+            case 'v':
+                pos[0] += 1
+                break
+            }
+            if (pos[0] == badPos[0] && pos[1] == badPos[1]) {
+                bad = true
+            }
+        }
+        return !bad
+    })
+
+    if (moves.length == 0) moves = ['']
+
+    return moves
+}
+
 function doPad(seq, posFunc) {
     // Get the current pos of the arm.
     let cur = posFunc('A')
     let result = ['']
 
-    // console.log('getting sequence for', seq)
-
     // For each letter in the sequence
     for (s of seq) {
-        // console.log('trying', s)
-        // Generate a move that goes to that letter.
+        // Generate all moves that go to that letter.
         let next = posFunc(s)
-        let move = []
-        let orig = cur.concat()
 
-        while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-        while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-        while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-        while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-
-        // Generate all unique permutations of that move.
-        move = move.join('')
-
-        let moves = move.permute().unique()
-
-        // Filter out sequences that touch the danger square.
-        let badPos = posFunc(' ')
-        moves = moves.filter(m => {
-            let pos = orig.concat()
-            let bad = false
-            for (let mi of m) {
-                switch (mi) {
-                case '<':
-                    pos[1] -= 1
-                    break
-                case '>':
-                    pos[1] += 1
-                    break
-                case '^':
-                    pos[0] -= 1
-                    break
-                case 'v':
-                    pos[0] += 1
-                    break
-                }
-                if (pos[0] == badPos[0] && pos[1] == badPos[1]) {
-                    bad = true
-                }
-            }
-            return !bad
-        })
-
-        if (moves.length == 0) moves = ['']
+        let moves = allMoves(cur, next, posFunc)
 
         // Add an 'A' to the end of every move.
         moves = moves.map(x => x + 'A')
-
-        // console.log('moves =', moves)
 
         // Add each of these onto every sequence already in the result.
         let nextResult = []
@@ -109,34 +112,8 @@ function doPad(seq, posFunc) {
                 nextResult.push(r+m)
             }
         }
+        cur = next
         result = nextResult
-    }
-
-    // console.log('result =', result)
-    // console.log()
-
-    return result
-}
-
-function doOnePad(seq, posFunc) {
-    // Get the current pos of the arm.
-    let cur = posFunc('A')
-    let result = ''
-
-    // console.log('getting sequence for', seq)
-
-    // For each letter in the sequence
-    for (s of seq) {
-        // console.log('trying', s)
-        // Generate a move that goes to that letter.
-        let next = posFunc(s)
-        let move = []
-        while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-        while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-        while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-        while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-
-        result = result + move.join('') + 'A'
     }
 
     // console.log('result =', result)
@@ -152,34 +129,6 @@ function numericPad(seq) {
 function dirPad(seq) {
     return doPad(seq, dirPos)
 }
-
-function oneDirPad(seq) {
-    return doOnePad(seq, dirPos)
-}
-
-function numericPadB(seq) {
-    return doPadB(seq, numPos)
-}
-
-function dirPadB(seq) {
-    return doPadB(seq, dirPos)
-}
-
-function numericPadBB(map) {
-    return doPadBB(map, numPos)
-}
-
-function dirPadBB(map) {
-    return doPadBBB(map, dirPos)
-}
-
-// Move from initial position (A) using <>^vA
-
-
-// First robot presses numerical keys
-// Second robot controls first robot's arm
-// Third robot presses second robot's arm
-
 
 function complexity(code) {
     // Get all possible numpad for first robot.
@@ -249,61 +198,6 @@ function complexity(code) {
 }
 
 
-function doPadB(seq, posFunc) {
-    // Get the current pos of the arm.
-    let badRow = posFunc('A')[0]
-    let cur = posFunc('A')
-    let result = ''
-
-    // console.log('getting sequence for', seq)
-
-    // For each letter in the sequence
-    for (s of seq) {
-        // console.log('trying', s)
-        // Generate a move that goes to that letter.
-        let next = posFunc(s)
-        let move = []
-
-        // If this is on a row with the bad square, we 
-        // go vertical first, then horizontal.
-        // Ortherwise, the reverse.
-        if (cur[0] == badRow) {
-            while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-            while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-            while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-            while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-        } else {
-            while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-            while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-            while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-            while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-        }
-
-        // Generate all unique permutations of that move.
-        result += move.join('') + 'A'
-    }
-
-    // console.log('result =', result)
-    // console.log()
-
-    return result
-}
-
-function complexityB(code, n) {
-    // Get a sequence for the first robot.
-    let first = numericPadB(code)
-
-    console.log(0, first)
-
-    let current = first
-    for (let i=0; i < n; i++) {
-        current = dirPadB(current)
-        console.log(i+1, current)
-    }
-    return current.length
-}
-
-
 function doPadBB(map, posFunc) {
     // Get the current pos of the arm.
     let badRow = posFunc('A')[0]
@@ -348,29 +242,13 @@ function doPadBB(map, posFunc) {
     return result
 }
 
-function complexityBB(code, n) {
-    // Get a sequence for the first robot.
-    let map = new Map()
-    map.set(code, 1)
-    let first = numericPadBB(map)
-
-    // console.log(0, first)
-
-    let current = first
-    for (let i=0; i < n; i++) {
-        current = dirPadBB(current)
-        // console.log(i+1, current)
-    }
-
-    // the length = the length of all keys * number of times used
-    let sum = 0
-    for (let seq of current.keys()) {
-        sum += seq.length * current.get(seq)
-    }
-    return sum
+function numericPadBB(map) {
+    return doPadBB(map, numPos)
 }
 
-
+function dirPadBB(map) {
+    return doPadBBB(map, dirPos)
+}
 
 function doPadBBB(map, posFunc) {
     // Get the current pos of the arm.
@@ -472,19 +350,6 @@ function partA(info) {
 
     for (let code of info) {
         let c = complexity(code)
-        let num = Number(code.substring(0,code.length-1))
-
-        console.log('code', code, 'complexity', c, 'number', num)
-        sum += c * num
-    }
-    return sum
-}
-
-function partB(info) {
-    let sum = 0
-
-    for (let code of info) {
-        let c = complexityB(code, 2)
         let num = Number(code.substring(0,code.length-1))
 
         console.log('code', code, 'complexity', c, 'number', num)
