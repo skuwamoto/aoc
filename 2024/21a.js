@@ -86,7 +86,6 @@ function doPad(seq, posFunc) {
     for (s of seq) {
         // Generate all moves that go to that letter.
         let next = posFunc(s)
-
         let moves = allMoves(cur, next, posFunc)
 
         // Add each of these onto every sequence already in the result.
@@ -138,166 +137,18 @@ function complexity(code, n) {
             })
         })
 
-        console.log(n+1, bestNext[0])
+        console.log(i+1, bestNext[0])
         current = bestNext
     }
 
     return current[0].length
 }
 
-
-function doPadBB(map, posFunc) {
-    // Get the current pos of the arm.
-    let badRow = posFunc('A')[0]
-    let result = new Map()
-    let cur = posFunc('A')
-
-    // console.log('getting sequence for', seq)
-
-    // For each letter in the sequence
-    for (let seq of map.keys()) {
-        for (let s of seq) {
-            // console.log('trying', s)
-            // Generate a move that goes to that letter.
-            let next = posFunc(s)
-            let move = []
-
-            // If this is on a row with the bad square, we 
-            // go vertical first, then horizontal.
-            // Ortherwise, the reverse.
-            if (cur[0] == badRow) {
-                while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-            } else {
-                while (cur[1] < next[1]) { move.push('>'); cur[1]++ }
-                while (cur[1] > next[1]) { move.push('<'); cur[1]-- }
-                while (cur[0] < next[0]) { move.push('v'); cur[0]++ }
-                while (cur[0] > next[0]) { move.push('^'); cur[0]-- }
-            }
-
-            // condense the move into a string
-            move = move.join('') + 'A'
-
-            // store it in the map
-            let prev = result.has(move) ? result.get(move) : 0
-            result.set(move, prev+map.get(seq))
-        }
-    }
-
-    // Returns a map of all sequences found in the moves.
-    return result
-}
-
-function numPadBB(map) {
-    return doPadBB(map, numPos)
-}
-
-function dirPadBB(map) {
-    return doPadBBB(map, dirPos)
-}
-
-function doPadBBB(map, posFunc) {
-    // Get the current pos of the arm.
-    let badRow = posFunc('A')[0]
-    let result = new Map()
-
-    // console.log('getting sequence for', seq)
-
-    // For each letter in the sequence
-    for (let seq of map.keys()) {
-        let c1 = 'A'
-
-        for (let c2 of seq) {
-            // console.log('trying', s)
-            // Generate a move that goes to that letter.
-            let move = ''
-
-            // If this is on a row with the bad square, we 
-            // go vertical first, then horizontal.
-            // Otherwise, the reverse.
-
-            if (c1 == '^' && c2 == 'A')      move += '>'
-            else if (c1 == '^' && c2 == 'v') move += 'v'
-            else if (c1 == 'A' && c2 == '^') move += '<'
-            else if (c1 == 'A' && c2 == '>') move += 'v'
-            else if (c1 == '<' && c2 == 'v') move += '>'
-            else if (c1 == '<' && c2 == '>') move += '>>'
-            else if (c1 == 'v' && c2 == '<') move += '<'
-            else if (c1 == 'v' && c2 == '^') move += '^'
-            else if (c1 == 'v' && c2 == '>') move += '>'
-            else if (c1 == '>' && c2 == 'A') move += '^'
-            else if (c1 == '>' && c2 == '<') move += '<<'
-            else if (c1 == '>' && c2 == 'v') move += '<'
-
-            else if (c1 == '>' && c2 == '^') move += '<^'
-            else if (c1 == '^' && c2 == '>') move += 'v>'
-            else if (c1 == 'A' && c2 == 'v') move += '<v'
-            else if (c1 == 'v' && c2 == 'A') move += '^>'
-            else if (c1 == 'A' && c2 == '<') move += 'v<<'
-            else if (c1 == '<' && c2 == 'A') move += '>>^'
-            else {
-                if (c1 != c2) {
-                    throw new Error()
-                }
-            }
-
-            move += 'A'
-
-            // store it in the map
-            let prev = result.has(move) ? result.get(move) : 0
-            result.set(move, prev+map.get(seq))
-        }
-    }
-
-    // Returns a map of all sequences found in the moves.
-    return result
-}
-
-function complexityBB(code, n) {
-    // Get a sequence for the first robot.
-    let first = numPad(code)
-
-    console.log(0, first)
-
-    let best = 10000000000000000000
-    for (let f of first) {
-        let current = new Map()
-        let key = ''
-        for (let fi of f) {
-            key += fi
-            if (fi == 'A') {
-                if (!current.has(key)) current.set(key, 0) 
-                current.set(key, current.get(key)+1)
-                key = ''
-            }
-        }
-        // console.log(0, current)
-
-        for (let i=0; i < n; i++) {
-            current = dirPadBB(current)
-            console.log(i+1, current)
-        }
-
-        // the length = the length of all keys * number of times used
-        let sum = 0
-        for (let seq of current.keys()) {
-            sum += seq.length * current.get(seq)
-        }
-        if (sum < best) {
-            best = sum
-            console.log('best is now', best)
-        }
-    }
-    return best
-}
-
 function partA(info) {
     let sum = 0
 
     for (let code of info) {
-        let c = complexity(code)
+        let c = complexity(code, 2)
         let num = Number(code.substring(0,code.length-1))
 
         console.log('code', code, 'complexity', c, 'number', num)
@@ -306,11 +157,104 @@ function partA(info) {
     return sum
 }
 
-function partBB(info) {
+// ==================================
+
+// From a sequence, returns a frequency map of sub-moves
+// e.g., "<A<A<<AA" => { "<A": 2, "<<A": 1, "A": 1 }
+
+function seqToMap(seq) {
+    let map = new Map()
+    for (let m of seq.substring(0, seq.length-1).split('A')) {
+        let key = m + 'A'
+        if (!map.has(key)) {
+            map.set(key, 0)
+        }
+        map.set(key, map.get(key) + 1)
+    }
+    return map
+}
+
+function doPadB(seqMap, posFunc) {
+    let result = new Map()
+
+    // For each sub-sequence
+    for (seq of seqMap.keys()) {
+        let cur = posFunc('A')
+        let c1 = 'A'
+
+        // For each letter of that sub-sequence
+        for (s of seq) {
+            let next = posFunc(s)
+            let moves = allMoves(cur, next, posFunc)
+            let move
+
+            if (moves.length == 1) move = moves[0]
+            else if (c1 == '>' && s == '^') move = '<^A'
+            else if (c1 == '^' && s == '>') move = 'v>A'
+            else if (c1 == 'A' && s == 'v') move = '<vA'
+            else if (c1 == 'v' && s == 'A') move = '^>A'
+            else if (c1 == 'A' && s == '<') move = 'v<<A'
+            else if (c1 == '<' && s == 'A') move = '>>^A'
+            else {
+                console.log('oops!', c1, s, moves)
+                throw new Error()
+            }
+            // Record the count of how often this subsequence of moves occurs
+            if (!result.has(move)) { 
+                result.set(move, 0) 
+            }
+
+            result.set(move, result.get(move) + seqMap.get(seq))
+            c1 = s
+            cur = next
+        }
+    }
+
+    return result
+}
+
+function numPadB(seqMap) {
+    return doPadB(seqMap, numPos)
+}
+
+function dirPadB(seqMap) {
+    return doPadB(seqMap, dirPos)
+}
+
+function complexityB(code, n) {
+    // Get all possible numpad for first robot.
+    let first = numPad(code)
+
+    console.log(0, first)
+
+    let best = 100000000000000000000000
+
+    for (let f of first) {
+        let current = seqToMap(f)
+        for (let i=0; i < n; i++) {
+            // Get all possible dirpad for next robot.
+            let next = dirPadB(current)
+            console.log(i+1, next)
+            current = next
+        }
+
+        let sum = 0
+        for (let key of current.keys()) {
+            sum += current.get(key) * key.length
+        }
+        best = Math.min(best, sum)
+    }
+
+    return best
+}
+
+
+
+function partB(info) {
     let sum = 0
 
     for (let code of info) {
-        let c = complexityBB(code, 2)
+        let c = complexityB(code, 25)
         let num = Number(code.substring(0,code.length-1))
 
         console.log('code', code, 'complexity', c, 'number', num)
@@ -322,6 +266,6 @@ function partBB(info) {
 // console.log(partA(test))
 console.log(partA(input))
 console.log('------------------------')
-// console.log(partB(input))
+console.log(partB(input))
 console.log('------------------------')
 // console.log(partBB(input))
